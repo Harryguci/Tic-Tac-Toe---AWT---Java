@@ -2,12 +2,11 @@ import components.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-
-import javax.tools.DocumentationTool.Location;
+// import javax.tools.DocumentationTool.Location;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        System.out.println("Start Game!");
 
         GameFrame mainFrame = new GameFrame("Tic tac toe");
         mainFrame.setLocation(50, 50);
@@ -15,42 +14,95 @@ public class Main {
         String[] items = { "Open file", "Open folder", "Close file", "Save" };
         MenuCustom menu = new MenuCustom("File", items);
 
-        Label label1 = new Label("Test Label");
-        label1.setBounds(20, 20, 100, 100);
-
         MenubarCustom menubar = new MenubarCustom();
         menubar.add(menu);
+
         ArrayList<Cell> cells = new ArrayList<Cell>();
+        final int[][] TEMP = { { 1, 0, 1 }, { 0, 1, 0 }, { 1, 0, 1 } };
+        final Color ColorCell_1 = new Color(170, 170, 240);
+        final Color ColorCell_2 = new Color(150, 150, 220);
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 Color color;
-                if ((i + j) % 2 == 0)
-                    color = new Color(170, 170, 240);
+                if (TEMP[i][j] == 0)
+                    color = ColorCell_1;
                 else
-                    color = new Color(240, 170, 170);
+                    color = ColorCell_2;
 
-                Cell temp = new Cell(i * 100, j * 100, color);
-                cells.add(temp);
+                Cell currentCell = new Cell(i * 100, j * 100, color);
+                cells.add(currentCell);
                 cells.get(cells.size() - 1).addMouseListener(new MouseListener() {
 
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        // TODO Auto-generated method stub
-                        // System.out.println("x : " + e.getComponent().getLocation().getX());
-                        // System.out.println("y : " + e.getComponent().getLocation().getY());
-
                         int x = (int) (e.getComponent().getLocation().getX());
                         int y = (int) (e.getComponent().getLocation().getY());
 
                         x /= 100;
                         y /= 100;
 
-                        // 0 1 2
-                        // 3 4 5
-                        // 6 7 8
+                        if (mainFrame.checkCell(x, y)) {
+                            cells.get(GameFrame.Matrix[x][y])
+                                    .setBackground(mainFrame.status ? new Color(200, 200, 200) : Color.CYAN);
+                            cells.get(GameFrame.Matrix[x][y]).setXO(mainFrame.status);
+                            if (mainFrame.status) {
+                                System.out.println("X");
+                            } else
+                                System.out.println("O");
 
-                        cells.get(GameFrame.Matrix[x][y]).setBackground(Color.RED);
+                            mainFrame.setCell(x, y);
+                            mainFrame.status = !mainFrame.status;
+                            mainFrame.setVisible(true);
+                            int is_win = mainFrame.isWin();
+                            if (is_win != -1 && is_win != 0) {
+                                if (is_win == 1) {
+                                    mainFrame.DisplayMessage("X win");
+                                    mainFrame.setVisible(true);
+                                } else {
+                                    mainFrame.DisplayMessage("O win");
+                                    mainFrame.setVisible(true);
+                                }
+                                mainFrame.GameStart();
+
+                                for (int i = 0; i < 10; i++) {
+                                    cells.get(i).reset();
+                                    int k = i % 3;
+                                    int q = i / 3;
+                                    int c = TEMP[k][q];
+
+                                    Color color;
+                                    if (c == 0)
+                                        color = ColorCell_1;
+                                    else
+                                        color = ColorCell_2;
+
+                                    cells.get(i).setBackground(color);
+                                    cells.get(i).setVisible(true);
+                                }
+
+                            }
+                            if (mainFrame.isDrawGame()) {
+                                mainFrame.DisplayMessage("DRAW GAME");
+
+                                for (int i = 0; i < 10; i++) {
+                                    cells.get(i).reset();
+                                    int k = i % 3;
+                                    int q = i / 3;
+                                    int c = TEMP[k][q];
+
+                                    Color color;
+                                    if (c == 0)
+                                        color = ColorCell_1;
+                                    else
+                                        color = ColorCell_2;
+
+                                    cells.get(i).setBackground(color);
+                                    cells.get(i).setVisible(true);
+                                }
+                                mainFrame.GameStart();
+                            }
+                        }
                     }
 
                     @Override
@@ -76,9 +128,8 @@ public class Main {
                         // TODO Auto-generated method stub
 
                     }
-
                 });
-                mainFrame.add(temp);
+                mainFrame.add(currentCell);
             }
         }
 

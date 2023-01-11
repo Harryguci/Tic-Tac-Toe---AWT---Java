@@ -9,6 +9,7 @@ public class Cell extends Panel implements MouseListener {
 
     public Cell() {
         super();
+        this.setLayout(null);
     }
 
     public Cell(int x, int y, Color color) {
@@ -35,10 +36,34 @@ public class Cell extends Panel implements MouseListener {
         Cell cell1 = new Cell(0, 0, Color.GRAY);
         Cell cell2 = new Cell(100, 0, Color.BLUE);
         Cell cell3 = new Cell(200, 0, Color.GRAY);
+        cell1.setXO(false);
         frame.add(cell1);
         frame.add(cell2);
         frame.add(cell3);
         frame.setVisible(true);
+    }
+
+    public void reset() {
+        this.setBackground(Color.WHITE);
+        removeAll();
+    }
+
+    public void setXO(boolean value) {
+        // true : X
+        // false: O
+        Label label;
+
+        if (value) {
+            label = new Label("X", Label.CENTER);
+        } else {
+            label = new Label("O", Label.CENTER);
+        }
+        label.setFont(new Font("Arial", Font.BOLD, 50));
+        label.setBounds(50, 50, 50, 50);
+        label.setForeground(Color.WHITE);
+
+        add(label);
+        this.setVisible(true);
     }
 
     @Override
